@@ -1,0 +1,16 @@
+.App {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+
+.App-header {
+  background-image: url('~/assets/images/vulture.jpg');
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  width: 100%;
+  height: 50vw;
+  max-height: 480px;
+  position: relative;
+}

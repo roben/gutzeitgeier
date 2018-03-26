@@ -1,0 +1,17 @@
+
+.ClockTimes-day-summary {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.ClockTimes-day-entry {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.ClockTimes-day-entry > div {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}

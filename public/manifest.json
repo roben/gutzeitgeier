@@ -1,0 +1,14 @@
+{
+  "name": "Gutzeitgeier",
+  "short_name": "Gutzeitgeier",
+  "lang": "de",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/assets/images/vulture.jpg",
+      "sizes": "192x192",
+      "type": "image/jpg"
+    }
+  ]
+}

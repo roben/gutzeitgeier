@@ -1,0 +1,13 @@
+
+.WorkingHours button {
+    text-transform: none;
+}
+.WorkingHours-form input {
+    color: rgba(255,255,255,0.9)
+}
+.WorkingHours {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    color: white;
+}
