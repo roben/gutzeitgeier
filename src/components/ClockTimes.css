@@ -1,16 +1,16 @@
-
-.ClockTimes-day-summary {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-.ClockTimes-day-entry {
+.ClockTimes .ClockTimes-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.ClockTimes-day-entry > div {
+
+.ClockTimes .ClockTimes-day-summary {
+    justify-content: flex-end;
+}
+
+.ClockTimes-day-entry {}
+
+.ClockTimes-day-entry>div {
     display: flex;
     align-items: center;
     justify-content: flex-end;

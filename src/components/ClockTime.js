@@ -15,43 +15,58 @@ import moment from 'moment'
 class ClockTime extends React.Component {
   state = {
     timer: null,
-    currentDuration: null
+    currentDuration: null,
+    currentDayWorkDuration: null
   }
   getClockIn = () => this.props.clockTime.clockIn
   getCurrentWorkDuration = () => this.state.currentDuration
-  getCurrentDayWorkDuration = () => {
+  getCurrentDayEntries = () => {
     const dayKey = moment(this.getClockIn() ? this.getClockIn() : new Date()).format('YYYY-MM-DD')
-    const day = this.props.clockTimes.days[dayKey]
-    let result = this.getCurrentWorkDuration()
-    if (day) {
-      result += day.map((ct, i) => ct.out - ct.in).reduce((a, b) => a + b)
-    }
-    return result
+    return this.props.clockTimes.days[dayKey]
   }
-  updateDuration = () => {
+  getCurrentDayWorkDuration = () => this.state.currentDayWorkDuration
+  recalculate = () => {
     let currentDuration = null
     if (this.getClockIn()) {
       currentDuration = new Date().getTime() - this.getClockIn()
     }
-    this.setState({ currentDuration })
-  }
-  componentDidMount = () => {
-    this.setState({ timer: setInterval(this.updateDuration, 1000) })
+
+    let currentDayWorkDuration = currentDuration
+    let day = this.getCurrentDayEntries()
+    if (day && day.length > 0) {
+      currentDayWorkDuration += day.map((ct, i) => ct.out - ct.in).reduce((a, b) => a + b)
+    }
+
+    this.setState({ currentDuration, currentDayWorkDuration })
   }
   clockOut = () => {
     this.props.clockTimeActions.clockOut(this.getClockIn())
   }
-  getTotalWorkDurationTarget = () => this.props.configuration.workingHours / 5 * 60 * 60 * 1000
+  getCurrentDayFirstClockIn() {
+
+  }
+  getWorkingHoursPerDay = () => this.props.configuration.workingHours / 5 * 60 * 60 * 1000
   getWorkEndTarget = () => {
-    let result = this.getTotalWorkDurationTarget()
+    let workDuration = this.getWorkingHoursPerDay()
     this.props.configuration.pauses.forEach((p, i) => {
-      if (p.after < result) {
-        result += p.duration
+      if (p.after < workDuration) {
+        workDuration += p.duration
       }
     })
-    return result + this.getClockIn()
+    let base = this.getClockIn()
+    let day = this.getCurrentDayEntries()
+    if (day && day.length > 0) {
+      base = Math.min(...day.map(d => d.in))
+    }
+    if (base == null) {
+      base = new Date().getTime()
+    }
+    return workDuration + base
   }
-  getWorkDurationBalance = () => this.getCurrentDayWorkDuration() - this.getTotalWorkDurationTarget()
+  getWorkDurationBalance = () => this.getCurrentDayWorkDuration() - this.getWorkingHoursPerDay()
+  componentDidMount = () => {
+    this.setState({ timer: setInterval(this.recalculate, 1000) })
+  }
   render = () => (
     <div className="ClockTime">
       <div className="ClockTime-clock">
@@ -59,12 +74,12 @@ class ClockTime extends React.Component {
           <Icon>timelapse</Icon> <TimeDuration seconds value={this.getCurrentDayWorkDuration()} />
         </Typography>
         <Typography color="inherit" variant="subheading" gutterBottom className="ClockTime-clock-balance icon-flex">
-          <Icon></Icon> <TimeDuration seconds value={this.getWorkDurationBalance()} />
+          <Icon>restore</Icon> <TimeDuration className={this.getWorkDurationBalance() < 0 ? 'negative' : 'positive'} value={this.getWorkDurationBalance()} />
         </Typography>
         <Typography color="inherit" variant="subheading" gutterBottom className="ClockTime-clock-off-time icon-flex">
-          <Icon>home</Icon> {moment(this.getWorkEndTarget()).format('HH:mm')}
+          <Icon>hotel</Icon> {moment(this.getWorkEndTarget()).format('HH:mm')}
         </Typography>
-        {this.getClockIn() &&
+        {false && this.getClockIn() &&
           <Typography color="inherit" variant="subheading" gutterBottom className="ClockTime-clock-running icon-flex">
             <Icon>play_arrow</Icon> <TimeDuration seconds value={this.getCurrentWorkDuration()} />
           </Typography>

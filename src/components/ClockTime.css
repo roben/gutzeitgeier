@@ -15,3 +15,9 @@
   bottom: -20px;
   right: 5vw;
 }
+.ClockTime .negative {
+  color: rgba(255,100,50, 0.8);
+}
+.ClockTime .positive {
+  color: rgba(100,255,50, 0.8);
+}

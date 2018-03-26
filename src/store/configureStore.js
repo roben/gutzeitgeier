@@ -13,7 +13,6 @@ const persistConfig = {
   stateReconciler: autoMergeLevel2 // see "Merge Process" section for details.
 };
 
-
 export const store = createStore(
   persistReducer(persistConfig, rootReducer),
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
