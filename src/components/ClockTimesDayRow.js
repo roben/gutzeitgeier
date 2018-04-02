@@ -32,7 +32,7 @@ class ClockTimesDayRow extends React.Component {
   }
   changeClockTime = (d, ctIndex, prop, value) => {
     const ct = this.props.clockTimes.days[d][ctIndex]
-    const newValue = moment(value, 'HH:mm').unix() * 1000
+    const newValue = moment(d + ' ' + value, 'YYYY-MM-DD HH:mm').unix() * 1000
     this.props.actions.changeClockTime(d, ctIndex, { ...ct, [prop]: newValue })
   }
   render = () => {
