@@ -18,11 +18,15 @@ class ClockTime extends React.Component {
     currentDuration: null,
     currentDayWorkDuration: null
   }
+  getCurrentDayKey = () => moment(this.getClockIn() ? this.getClockIn() : new Date()).format('YYYY-MM-DD')
   getClockIn = () => this.props.clockTime.clockIn
   getCurrentWorkDuration = () => this.state.currentDuration
   getCurrentDayEntries = () => {
-    const dayKey = moment(this.getClockIn() ? this.getClockIn() : new Date()).format('YYYY-MM-DD')
-    return this.props.clockTimes.days[dayKey]
+    const result = this.props.clockTimes.days[this.getCurrentDayKey()]
+    if (result != null && result.length > 0) {
+      return result
+    }
+    return []
   }
   getCurrentDayWorkDuration = () => this.state.currentDayWorkDuration
   recalculate = () => {
@@ -32,15 +36,15 @@ class ClockTime extends React.Component {
     }
 
     let currentDayWorkDuration = currentDuration
-    let day = this.getCurrentDayEntries()
-    if (day && day.length > 0) {
+    let day = this.getCurrentDayEntries().filter(ct => ct.in != null && ct.out != null)
+    if (day.length > 0) {
       currentDayWorkDuration += day.map((ct, i) => ct.out - ct.in).reduce((a, b) => a + b)
     }
 
     this.setState({ currentDuration, currentDayWorkDuration })
   }
   clockOut = () => {
-    this.props.clockTimeActions.clockOut(this.getClockIn())
+    this.props.clockTimeActions.clockOut(this.getCurrentDayKey(), this.getClockIn())
   }
   getCurrentDayFirstClockIn() {
 
@@ -48,9 +52,10 @@ class ClockTime extends React.Component {
   getWorkingHoursPerDay = () => this.props.configuration.workingHours / 5 * 60 * 60 * 1000
   getWorkEndTarget = () => {
     let workDuration = this.getWorkingHoursPerDay()
+    let pauseTarget = 0
     this.props.configuration.pauses.forEach((p, i) => {
       if (p.after < workDuration) {
-        workDuration += p.duration
+        pauseTarget += p.duration
       }
     })
     let base = this.getClockIn()
@@ -61,7 +66,7 @@ class ClockTime extends React.Component {
     if (base == null) {
       base = new Date().getTime()
     }
-    return workDuration + base
+    return workDuration + pauseTarget + base
   }
   getWorkDurationBalance = () => this.getCurrentDayWorkDuration() - this.getWorkingHoursPerDay()
   componentDidMount = () => {
@@ -73,11 +78,11 @@ class ClockTime extends React.Component {
         <Typography color="inherit" variant="headline" gutterBottom className="ClockTime-clock-running icon-flex">
           <Icon>timelapse</Icon> <TimeDuration seconds value={this.getCurrentDayWorkDuration()} />
         </Typography>
-        <Typography color="inherit" variant="subheading" gutterBottom className="ClockTime-clock-balance icon-flex">
-          <Icon>restore</Icon> <TimeDuration className={this.getWorkDurationBalance() < 0 ? 'negative' : 'positive'} value={this.getWorkDurationBalance()} />
+        <Typography color="inherit" variant="subheading" gutterBottom className={(this.getWorkDurationBalance() < 0 ? 'negative' : 'positive') + ' ClockTime-clock-balance icon-flex'}>
+          <Icon>restore</Icon> <TimeDuration value={this.getWorkDurationBalance()} />
         </Typography>
         <Typography color="inherit" variant="subheading" gutterBottom className="ClockTime-clock-off-time icon-flex">
-          <Icon>hotel</Icon> {moment(this.getWorkEndTarget()).format('HH:mm')}
+          <Icon>home</Icon> {moment(this.getWorkEndTarget()).format('HH:mm')}
         </Typography>
         {false && this.getClockIn() &&
           <Typography color="inherit" variant="subheading" gutterBottom className="ClockTime-clock-running icon-flex">
@@ -112,7 +117,7 @@ export default connect(
   (dispatch) => ({
     clockTimeActions: {
       clockIn: () => dispatch({ type: actionTypes.CLOCK_IN }),
-      clockOut: (clockIn) => dispatch({ type: actionTypes.CLOCK_OUT, clockIn })
+      clockOut: (day, clockIn) => dispatch({ type: actionTypes.CLOCK_OUT, day, clockIn })
     }
   })
 )(ClockTime)

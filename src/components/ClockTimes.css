@@ -4,6 +4,13 @@
     justify-content: space-between;
 }
 
+.ClockTimes .ClockTimes-row input {
+    color: rgba(0, 0, 0, 0.54);
+}
+.ClockTimes .ClockTimes-row input:focus {
+    color: black;
+}
+
 .ClockTimes .ClockTimes-day-summary {
     justify-content: flex-end;
 }

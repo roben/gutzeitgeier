@@ -1,3 +1,14 @@
+
+## Todo
+- Selectors
+ - getCurrentDayPauseTotal
+ - getCurrentDayWorkTimeTotal
+- Feierabendzeit berücksichtigt nicht tatsächliche Pausen wenn größe als Pausensoll
+- Bearbeiten von Zeiten
+- Löschen von Zeiten
+
+## React Docs
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>

@@ -3,30 +3,63 @@ import * as actionTypes from '../actions/actionTypes'
 import moment from 'moment'
 
 export default function clockTimes(state = initialState.clockTimes, action) {
-  switch (action.type) {
-    case actionTypes.CLOCK_IN: {
-      const dayKey = moment().format('YYYY-MM-DD')
-      if (dayKey in state.days) {
-        return state
+  const createDayEntryIfMissing = (dayKey) => {
+    if (dayKey in state.days) {
+      return state
+    }
+    return {
+      ...state,
+      days: {
+        ...state.days,
+        [dayKey]: []
       }
+    }
+  }
+  switch (action.type) {
+    case actionTypes.REMOVE_CLOCK_TIME:
+      const newEntries = state.days[action.day].slice(0)
+      newEntries.splice(action.index, 1)
       return {
         ...state,
         days: {
           ...state.days,
-          [dayKey]: []
+          [action.day]: newEntries
+        }
+      }
+    case actionTypes.ADD_CLOCK_TIME:
+      return {
+        ...state,
+        days: {
+          ...state.days,
+          [action.day]: [...state.days[action.day], { in: 0, out: 0 }]
+        }
+      }
+    case actionTypes.CHANGE_CLOCK_TIME: {
+      const newEntries = state.days[action.day].slice(0)
+      newEntries[action.index] = action.newValue
+      return {
+        ...state,
+        days: {
+          ...state.days,
+          [action.day]: newEntries
         }
       }
     }
+    case actionTypes.CLOCK_IN: {
+      const dayKey = moment().format('YYYY-MM-DD')
+      return createDayEntryIfMissing(dayKey)
+    }
     case actionTypes.CLOCK_OUT:
     case actionTypes.ADD_PAUSE_TIME: {
-      const dayKey = moment(action.clockIn).format('YYYY-MM-DD')
+      const state = createDayEntryIfMissing(action.day)
       const subtract = action.type === actionTypes.ADD_PAUSE_TIME ? action.duration : 0
-      const day = [...state.days[dayKey], { in: action.clockIn, out: new Date().getTime() - subtract }]
+      const day = [...state.days[action.day], { in: action.clockIn, out: new Date().getTime() - subtract }]
+
       return {
         ...state,
         days: {
           ...state.days,
-          [dayKey]: day
+          [action.day]: day
         }
       }
     }

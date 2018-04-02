@@ -1,0 +1,22 @@
+.ClockTimesDayRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ClockTimesDayRow input {
+    color: rgba(0, 0, 0, 0.54);
+}
+.ClockTimesDayRow input:focus {
+    color: black;
+}
+
+.ClockTimesDayRow>div {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-grow: 99;
+}
+.ClockTimesDayRow>div:last-child {
+    flex-grow: 1;
+}

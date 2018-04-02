@@ -7,14 +7,15 @@ import moment from 'moment'
 import * as actionTypes from '../actions/actionTypes'
 
 import Icon from 'material-ui/Icon'
-import TimeDuration from './TimeDuration';
-import { Card, CardContent, Button } from 'material-ui';
+import TimeDuration from './TimeDuration'
+import ClockTimesDayRow from './ClockTimesDayRow'
+import { Card, CardContent, Button } from 'material-ui'
 
 
 class ClockTimes extends React.Component {
   state = {
     timer: null,
-    currentDuration: null,
+    currentDuration: null
   }
   componentDidMount = () => {
     this.setState({ timer: setInterval(this.recalculate, 1000) })
@@ -24,6 +25,11 @@ class ClockTimes extends React.Component {
       currentDuration: this.getCurrentClockInDurationMinutes()
     })
   }
+  changeClockTime = (d, ctIndex, prop, value) => {
+    const ct = this.props.clockTimes.days[d][ctIndex]
+    const newValue = moment(value, 'HH:mm').unix() * 1000
+    this.props.actions.changeClockTime(d, ctIndex, { ...ct, [prop]: newValue })
+  }
   getCurrentClockInDurationMinutes = () => this.props.currentClockIn ? (new Date().getTime() - this.props.currentClockIn) / 1000 / 60 : 0
   render = () => (
     <div className="ClockTimes">
@@ -32,33 +38,32 @@ class ClockTimes extends React.Component {
           <CardContent>
             <Typography variant="caption" gutterBottom>{moment(d).format('dddd, DD.MM.YYYY')}</Typography>
             <Typography variant="body2" gutterBottom color="textSecondary">
-              {this.props.clockTimes.days[d].map((ct, i) =>
-                <div key={i} className="ClockTimes-day-entry ClockTimes-row">
-                  <div><Icon color="disabled">play_arrow</Icon> {moment(ct.in).format('HH:mm')}</div>
-                  <div><Icon color="disabled">pause</Icon> {moment(ct.out).format('HH:mm')}</div>
-                  <div><Icon color="disabled">timelapse</Icon> <TimeDuration value={ct.out - ct.in} /></div>
-                </div>
-              )}
+              {this.props.clockTimes.days[d].map((ct, ctIndex) => <ClockTimesDayRow key={ctIndex} day={d} ct={ct} ctIndex={ctIndex} />)}
             </Typography>
             <Typography variant="body2" className="ClockTimes-row ClockTimes-day-summary">
               {this.state.currentDuration > 15 &&
-                <Button onClick={() => this.props.actions.addPauseMinutes(15, this.props.currentClockIn)} color='primary'>
+                <Button onClick={() => this.props.actions.addPauseMinutes(d, 15, this.props.currentClockIn)} color='primary'>
                   <Icon>pause</Icon>
                   +15
                 </Button>
               }
               {this.state.currentDuration > 30 &&
-                <Button onClick={() => this.props.actions.addPauseMinutes(15, this.props.currentClockIn)} color='primary'>
+                <Button onClick={() => this.props.actions.addPauseMinutes(d, 15, this.props.currentClockIn)} color='primary'>
                   <Icon>pause</Icon>
                   +30
                 </Button>
               }
-              {this.props.clockTimes.days[d].length > 0 &&
-                <div className="icon-flex">
-                  <Icon color="disabled">timelapse</Icon>
-                  <TimeDuration value={this.props.clockTimes.days[d].map(ct => ct.out - ct.in).reduce((a, b) => a + b)} />
-                </div>
-              }
+              <Typography variant="body2" gutterBottom color="textSecondary">
+                {this.props.clockTimes.days[d].length > 0 &&
+                  <div className="icon-flex">
+                    <Icon color="disabled">timelapse</Icon>
+                    <TimeDuration color="disabled" value={this.props.clockTimes.days[d].map(ct => ct.out - ct.in).reduce((a, b) => a + b)} />
+                  </div>
+                }
+              </Typography>
+              <Button size="small" onClick={() => this.props.actions.addClockTimeEntry(d)}>
+                <Icon>alarm_add</Icon>
+              </Button>
             </Typography>
           </CardContent>
         </Card>
@@ -69,7 +74,7 @@ class ClockTimes extends React.Component {
 }
 
 ClockTimes.propTypes = {
-  clockTimeActions: PropTypes.object,
+  actions: PropTypes.object,
   state: PropTypes.object
 }
 
@@ -77,7 +82,8 @@ export default connect(
   (state) => ({ clockTimes: state.clockTimes, currentClockIn: state.clockTime.clockIn }),
   (dispatch) => ({
     actions: {
-      addPauseMinutes: (durationMinutes, clockIn) => dispatch({ type: actionTypes.ADD_PAUSE_TIME, duration: durationMinutes * 60 * 1000, clockIn }),
+      addPauseMinutes: (day, durationMinutes, clockIn) => dispatch({ type: actionTypes.ADD_PAUSE_TIME, day, duration: durationMinutes * 60 * 1000, clockIn }),
+      addClockTimeEntry: (day) => dispatch({ type: actionTypes.ADD_CLOCK_TIME, day }),
     }
   })
 )(ClockTimes)
