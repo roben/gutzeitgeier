@@ -6,11 +6,16 @@
 }
 
 .ClockTimesDayRow input {
-    width: 95px;
+    width: 65px;
     color: rgba(0, 0, 0, 0.54);
 }
 .ClockTimesDayRow input:focus {
     color: black;
+}
+
+input[type=time]::-webkit-inner-spin-button, 
+input[type=time]::-webkit-outer-spin-button { 
+    display: none;
 }
 
 .ClockTimesDayRow>div {

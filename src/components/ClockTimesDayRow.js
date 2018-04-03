@@ -7,7 +7,8 @@ import * as actionTypes from '../actions/actionTypes'
 
 import Icon from 'material-ui/Icon'
 import TimeDuration from './TimeDuration'
-import { Button, TextField } from 'material-ui'
+import { Button } from 'material-ui'
+import TimeInput from 'material-ui-time-picker'
 
 
 class ClockTimesDayRow extends React.Component {
@@ -32,7 +33,7 @@ class ClockTimesDayRow extends React.Component {
   }
   changeClockTime = (d, ctIndex, prop, value) => {
     const ct = this.props.clockTimes.days[d][ctIndex]
-    const newValue = moment(d + ' ' + value, 'YYYY-MM-DD HH:mm').unix() * 1000
+    const newValue = value.getTime()
     this.props.actions.changeClockTime(d, ctIndex, { ...ct, [prop]: newValue })
   }
   render = () => {
@@ -42,17 +43,17 @@ class ClockTimesDayRow extends React.Component {
     return <div className="ClockTimesDayRow">
       <div>
         <Icon color="disabled">play_arrow</Icon>
-        <TextField
-          defaultValue={moment(ct.in).format('HH:mm')}
-          type="time"
-          onChange={e => this.changeClockTime(d, ctIndex, 'in', e.target.value)} />
+        <TimeInput
+          defaultValue={moment(ct.in).toDate()}
+          mode="24h"
+          onChange={time => this.changeClockTime(d, ctIndex, 'in', time)} />
       </div>
       <div>
         <Icon color="disabled">pause</Icon>
-        <TextField
-          defaultValue={moment(ct.out).format('HH:mm')}
-          type="time"
-          onChange={e => this.changeClockTime(d, ctIndex, 'out', e.target.value)} />
+        <TimeInput
+          defaultValue={moment(ct.out).toDate()}
+          mode="24h"
+          onChange={time => this.changeClockTime(d, ctIndex, 'out', time)} />
       </div>
       <div><Icon color="disabled">timelapse</Icon> <TimeDuration value={ct.out - ct.in} /></div>
       <div>
