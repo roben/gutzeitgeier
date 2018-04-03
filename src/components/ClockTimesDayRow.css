@@ -2,9 +2,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .ClockTimesDayRow input {
+    width: 95px;
     color: rgba(0, 0, 0, 0.54);
 }
 .ClockTimesDayRow input:focus {

@@ -15,7 +15,11 @@ import { Card, CardContent, Button } from 'material-ui'
 class ClockTimes extends React.Component {
   state = {
     timer: null,
-    currentDuration: null
+    currentDuration: null,
+    dayDeletionConfirmation: null
+  }
+  confirmDeletion = (d) => {
+    this.setState({ dayDeletionConfirmation: d })
   }
   componentDidMount = () => {
     this.setState({ timer: setInterval(this.recalculate, 1000) })
@@ -61,6 +65,20 @@ class ClockTimes extends React.Component {
                   </div>
                 }
               </Typography>
+              {this.props.clockTimes.days[d].length === 0 &&
+                <div>
+                  {this.state.dayDeletionConfirmation === d &&
+                    <Button size="small" onClick={() => this.props.actions.removeDay(d)}>
+                      <Icon color='error'>delete_forever</Icon>
+                    </Button>
+                  }
+                  {this.state.dayDeletionConfirmation !== d &&
+                    <Button size="small" onClick={() => this.confirmDeletion(d)}>
+                      <Icon color='error'>delete</Icon>
+                    </Button>
+                  }
+                </div>
+              }
               <Button size="small" onClick={() => this.props.actions.addClockTimeEntry(d)}>
                 <Icon>alarm_add</Icon>
               </Button>
@@ -84,6 +102,7 @@ export default connect(
     actions: {
       addPauseMinutes: (day, durationMinutes, clockIn) => dispatch({ type: actionTypes.ADD_PAUSE_TIME, day, duration: durationMinutes * 60 * 1000, clockIn }),
       addClockTimeEntry: (day) => dispatch({ type: actionTypes.ADD_CLOCK_TIME, day }),
+      removeDay: (day) => dispatch({ type: actionTypes.REMOVE_DAY, day }),
     }
   })
 )(ClockTimes)

@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import React from 'react'
 import * as actionTypes from '../actions/actionTypes'
 import './ClockTime.css'
@@ -10,6 +9,7 @@ import Button from 'material-ui/Button'
 import TimeDuration from './TimeDuration'
 
 import moment from 'moment'
+import { getWorkingMsPerDay, getMinimumWorkDurationWithPausesMs } from '../selectors';
 
 
 class ClockTime extends React.Component {
@@ -49,15 +49,7 @@ class ClockTime extends React.Component {
   getCurrentDayFirstClockIn() {
 
   }
-  getWorkingHoursPerDay = () => this.props.configuration.workingHours / 5 * 60 * 60 * 1000
   getWorkEndTarget = () => {
-    let workDuration = this.getWorkingHoursPerDay()
-    let pauseTarget = 0
-    this.props.configuration.pauses.forEach((p, i) => {
-      if (p.after < workDuration) {
-        pauseTarget += p.duration
-      }
-    })
     let base = this.getClockIn()
     let day = this.getCurrentDayEntries()
     if (day && day.length > 0) {
@@ -66,9 +58,9 @@ class ClockTime extends React.Component {
     if (base == null) {
       base = new Date().getTime()
     }
-    return workDuration + pauseTarget + base
+    return this.props.minimumWorkDurationWithPausesMs + base
   }
-  getWorkDurationBalance = () => this.getCurrentDayWorkDuration() - this.getWorkingHoursPerDay()
+  getWorkDurationBalance = () => this.getCurrentDayWorkDuration() - this.props.workingMsPerDay
   componentDidMount = () => {
     this.setState({ timer: setInterval(this.recalculate, 1000) })
   }
@@ -106,14 +98,13 @@ class ClockTime extends React.Component {
   )
 }
 
-ClockTime.propTypes = {
-  clockTimeActions: PropTypes.object,
-  state: PropTypes.object,
-  configuration: PropTypes.object
-}
-
 export default connect(
-  (state) => ({ clockTime: state.clockTime, clockTimes: state.clockTimes, configuration: state.configuration }),
+  (state) => ({
+    workingMsPerDay: getWorkingMsPerDay(state),
+    minimumWorkDurationWithPausesMs: getMinimumWorkDurationWithPausesMs(state),
+    clockTime: state.clockTime,
+    clockTimes: state.clockTimes
+  }),
   (dispatch) => ({
     clockTimeActions: {
       clockIn: () => dispatch({ type: actionTypes.CLOCK_IN }),

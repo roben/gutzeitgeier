@@ -16,6 +16,13 @@ export default function clockTimes(state = initialState.clockTimes, action) {
     }
   }
   switch (action.type) {
+    case actionTypes.REMOVE_DAY: {
+      const {[action.day] : entriesOfRemovedDay, ...otherDays} = state.days
+      return {
+        ...state,
+        days: otherDays
+      }
+    }
     case actionTypes.REMOVE_CLOCK_TIME:
       const newEntries = state.days[action.day].slice(0)
       newEntries.splice(action.index, 1)
@@ -26,14 +33,16 @@ export default function clockTimes(state = initialState.clockTimes, action) {
           [action.day]: newEntries
         }
       }
-    case actionTypes.ADD_CLOCK_TIME:
+    case actionTypes.ADD_CLOCK_TIME: {
+      const midnight = moment(action.day)
       return {
         ...state,
         days: {
           ...state.days,
-          [action.day]: [...state.days[action.day], { in: 0, out: 0 }]
+          [action.day]: [...state.days[action.day], { in: midnight, out: midnight }]
         }
       }
+    }
     case actionTypes.CHANGE_CLOCK_TIME: {
       const newEntries = state.days[action.day].slice(0)
       newEntries[action.index] = action.newValue
