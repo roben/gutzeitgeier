@@ -34,7 +34,7 @@ export default function clockTimes(state = initialState.clockTimes, action) {
         }
       }
     case actionTypes.ADD_CLOCK_TIME: {
-      const midnight = moment(action.day)
+      const midnight = moment(action.day).unix() * 1000
       return {
         ...state,
         days: {
