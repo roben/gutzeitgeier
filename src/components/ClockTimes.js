@@ -52,7 +52,7 @@ class ClockTimes extends React.Component {
                 </Button>
               }
               {this.state.currentDuration > 30 &&
-                <Button onClick={() => this.props.actions.addPauseMinutes(d, 15, this.props.currentClockIn)} color='primary'>
+                <Button onClick={() => this.props.actions.addPauseMinutes(d, 30, this.props.currentClockIn)} color='primary'>
                   <Icon>pause</Icon>
                   +30
                 </Button>
