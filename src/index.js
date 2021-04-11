@@ -7,7 +7,7 @@ import moment from 'moment'
 import 'moment/locale/de'
 import registerServiceWorker from './registerServiceWorker'
 import { persistor, store } from './store/configureStore';
-import { CircularProgress } from 'material-ui/Progress';
+import { CircularProgress } from '@material-ui/core';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 
 moment.locale('de')

@@ -3,7 +3,7 @@ import './App.css'
 import ClockTime from './components/ClockTime'
 import ClockTimes from './components/ClockTimes'
 import WorkingHours from './components/WorkingHours'
-import CssBaseline from 'material-ui/CssBaseline';
+import { CssBaseline } from '@material-ui/core';
 
 class App extends Component {
   render() {

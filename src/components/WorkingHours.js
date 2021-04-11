@@ -4,8 +4,8 @@ import React from 'react'
 import * as actionTypes from '../actions/actionTypes'
 import './ClockTimes.css'
 
-import Button from 'material-ui/Button'
-import { FormControl, TextField } from 'material-ui';
+import { Button } from '@material-ui/core'
+import { FormControl, TextField } from '@material-ui/core';
 import './WorkingHours.css';
 
 

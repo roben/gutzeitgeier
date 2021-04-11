@@ -2,10 +2,9 @@ import { connect } from 'react-redux'
 import React from 'react'
 import * as actionTypes from '../actions/actionTypes'
 import './ClockTime.css'
-import Typography from 'material-ui/Typography'
 
-import Icon from 'material-ui/Icon'
-import Button from 'material-ui/Button'
+import { Timelapse, Restore, Home, PlayArrow, Pause } from '@material-ui/icons'
+import { Button, Typography } from '@material-ui/core'
 import TimeDuration from './TimeDuration'
 
 import moment from 'moment'
@@ -68,29 +67,29 @@ class ClockTime extends React.Component {
     <div className="ClockTime">
       <div className="ClockTime-clock">
         <Typography color="inherit" variant="headline" gutterBottom className="ClockTime-clock-running icon-flex">
-          <Icon>timelapse</Icon> <TimeDuration seconds value={this.getCurrentDayWorkDuration()} />
+          <Timelapse/> <TimeDuration seconds value={this.getCurrentDayWorkDuration()} />
         </Typography>
         <Typography color="inherit" variant="subheading" gutterBottom className={(this.getWorkDurationBalance() < 0 ? 'negative' : 'positive') + ' ClockTime-clock-balance icon-flex'}>
-          <Icon>restore</Icon> <TimeDuration value={this.getWorkDurationBalance()} />
+          <Restore/> <TimeDuration value={this.getWorkDurationBalance()} />
         </Typography>
         <Typography color="inherit" variant="subheading" gutterBottom className="ClockTime-clock-off-time icon-flex">
-          <Icon>home</Icon> {moment(this.getWorkEndTarget()).format('HH:mm')}
+          <Home/> {moment(this.getWorkEndTarget()).format('HH:mm')}
         </Typography>
         {false && this.getClockIn() &&
           <Typography color="inherit" variant="subheading" gutterBottom className="ClockTime-clock-running icon-flex">
-            <Icon>play_arrow</Icon> <TimeDuration seconds value={this.getCurrentWorkDuration()} />
+            <PlayArrow/> <TimeDuration seconds value={this.getCurrentWorkDuration()} />
           </Typography>
         }
       </div>
       <div className="ClockTime-button-container">
         {!this.getClockIn() &&
           <div>
-            <Button variant="fab" className="ClockTime-button" color="primary" onClick={this.props.clockTimeActions.clockIn}><Icon>play_arrow</Icon></Button>
+            <Button variant="fab" className="ClockTime-button" color="primary" onClick={this.props.clockTimeActions.clockIn}><PlayArrow/></Button>
           </div>
         }
         {this.getClockIn() &&
           <div>
-            <Button variant="fab" className="ClockTime-button" color="secondary" onClick={this.clockOut}><Icon>pause</Icon></Button>
+            <Button variant="fab" className="ClockTime-button" color="secondary" onClick={this.clockOut}><Pause/></Button>
           </div>
         }
       </div>
