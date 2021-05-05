@@ -41,26 +41,24 @@ class ClockTimes extends React.Component {
 					<CardContent>
 						<Typography variant="caption" gutterBottom>{moment(d).format('dddd, DD.MM.YYYY')}</Typography>
 						<Typography variant="body2" gutterBottom color="textSecondary">
-							{this.props.clockTimes.days[d].map((ct, ctIndex) => <ClockTimesDayRow key={ctIndex} day={d} ct={ct} ctIndex={ctIndex} />)}
+							<table style={{width: '100%'}}>
+								{this.props.clockTimes.days[d].map((ct, ctIndex) => <ClockTimesDayRow key={ctIndex} day={d} ct={ct} ctIndex={ctIndex} />)}
+							</table>
 						</Typography>
 						<Typography variant="body2" className="ClockTimes-row ClockTimes-day-summary">
-							{this.state.currentDuration > 15 &&
-								<Button onClick={() => this.props.actions.addPauseMinutes(d, 15, this.props.currentClockIn)} color='primary'>
+							{[15, 30, 45, 60].map((time) =>
+								this.state.currentDuration > 0 &&
+								<Button onClick={() => this.props.actions.addPauseMinutes(d, time, this.props.currentClockIn)} color='primary'>
 									<Pause />
-                  +15
-                </Button>
-							}
-							{this.state.currentDuration > 30 &&
-								<Button onClick={() => this.props.actions.addPauseMinutes(d, 30, this.props.currentClockIn)} color='primary'>
-									<Pause />
-                  +30
-                </Button>
-							}
+									{time}
+								</Button>
+							)}
 							<Typography variant="body2" gutterBottom color="textSecondary">
 								{this.props.clockTimes.days[d].length > 0 &&
 									<div className="icon-flex">
-										<Timelapse color="disabled" />
-										<TimeDuration color="disabled" value={this.props.clockTimes.days[d].map(ct => ct.out - ct.in).reduce((a, b) => a + b)} />
+										Soll&nbsp;
+										<TimeDuration value={this.props.clockTimes.days[d].map(ct => ct.out - ct.in).reduce((a, b) => a + b)} />
+										<Timelapse />
 									</div>
 								}
 							</Typography>
@@ -68,18 +66,18 @@ class ClockTimes extends React.Component {
 								<div>
 									{this.state.dayDeletionConfirmation === d &&
 										<Button size="small" onClick={() => this.props.actions.removeDay(d)}>
-											<DeleteForever color='error'/>
+											<DeleteForever color='error' />
 										</Button>
 									}
 									{this.state.dayDeletionConfirmation !== d &&
 										<Button size="small" onClick={() => this.confirmDeletion(d)}>
-											<Delete color='error'/>
+											<Delete color='error' />
 										</Button>
 									}
 								</div>
 							}
 							<Button size="small" onClick={() => this.props.actions.addClockTimeEntry(d)}>
-								<AlarmAdd/>
+								Eintrag hinzufügen <AlarmAdd />
 							</Button>
 						</Typography>
 					</CardContent>

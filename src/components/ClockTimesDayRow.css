@@ -1,8 +1,10 @@
-.ClockTimesDayRow {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+.ClockTimesDayRow td {
+	vertical-align: middle;
+}
+
+.ClockTimesDayRow td>div {
+	display: flex;
+	align-items: center;
 }
 
 .ClockTimesDayRow input {
@@ -13,8 +15,8 @@
     color: black;
 }
 
-input[type=time]::-webkit-inner-spin-button, 
-input[type=time]::-webkit-outer-spin-button { 
+input[type=time]::-webkit-inner-spin-button,
+input[type=time]::-webkit-outer-spin-button {
     display: none;
 }
 

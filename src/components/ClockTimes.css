@@ -2,6 +2,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+	flex-wrap: wrap;
 }
 
 .ClockTimes .ClockTimes-row input {
@@ -12,7 +13,6 @@
 }
 
 .ClockTimes .ClockTimes-day-summary {
-    justify-content: flex-end;
 }
 
 .ClockTimes-day-entry {}
