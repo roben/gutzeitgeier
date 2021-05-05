@@ -7,8 +7,7 @@ import * as actionTypes from '../actions/actionTypes'
 
 import { Pause, Restore, DeleteForever, Delete, PlayArrow } from '@material-ui/icons'
 import TimeDuration from './TimeDuration'
-import { Button } from '@material-ui/core'
-import TimeInput from 'material-ui-time-picker'
+import { Button, TextField } from '@material-ui/core'
 
 
 class ClockTimesDayRow extends React.Component {
@@ -33,10 +32,9 @@ class ClockTimesDayRow extends React.Component {
 	}
 	changeClockTime = (d, ctIndex, prop, value) => {
 		const ct = this.props.clockTimes.days[d][ctIndex]
-
 		const day = moment(d);
 		// make sure the changed clock time has the same date as the clock day
-		const valueMoment = moment(value).set({
+		const valueMoment = moment(value, 'HH:mm').set({
 			'year': day.year(),
 			'month': day.month(),
 			'date': day.date()
@@ -52,19 +50,21 @@ class ClockTimesDayRow extends React.Component {
 			<td>
 				<div>
 					<PlayArrow color="disabled" />
-					<TimeInput
-						defaultValue={moment(ct.in).toDate()}
+					<TextField
+						type="time"
+						defaultValue={moment(ct.in).format('HH:mm')}
 						mode="24h"
-						onChange={time => this.changeClockTime(d, ctIndex, 'in', time)} />
+						onChange={e => this.changeClockTime(d, ctIndex, 'in', e.target.value)} />
 				</div>
 			</td>
 			<td>
 				<div>
 					<Pause color="disabled" />
-					<TimeInput
-						defaultValue={moment(ct.out).toDate()}
+					<TextField
+						type="time"
+						defaultValue={moment(ct.out).format('HH:mm')}
 						mode="24h"
-						onChange={time => this.changeClockTime(d, ctIndex, 'out', time)} />
+						onChange={e => this.changeClockTime(d, ctIndex, 'out', e.target.value)} />
 				</div>
 			</td>
 			<td>
