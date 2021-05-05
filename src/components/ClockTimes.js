@@ -45,15 +45,15 @@ class ClockTimes extends React.Component {
 								{this.props.clockTimes.days[d].map((ct, ctIndex) => <ClockTimesDayRow key={ctIndex} day={d} ct={ct} ctIndex={ctIndex} />)}
 							</table>
 						</Typography>
-						<Typography variant="body2" className="ClockTimes-row ClockTimes-day-summary">
+						<div className="ClockTimes-row ClockTimes-day-summary">
 							{[15, 30, 45, 60].map((time) =>
-								this.state.currentDuration > 0 &&
+								this.state.currentDuration > time &&
 								<Button onClick={() => this.props.actions.addPauseMinutes(d, time, this.props.currentClockIn)} color='primary'>
 									<Pause />
 									{time}
 								</Button>
 							)}
-							<Typography variant="body2" gutterBottom color="textSecondary">
+							<div gutterBottom color="textSecondary">
 								{this.props.clockTimes.days[d].length > 0 &&
 									<div className="icon-flex">
 										Soll&nbsp;
@@ -61,7 +61,7 @@ class ClockTimes extends React.Component {
 										<Timelapse />
 									</div>
 								}
-							</Typography>
+							</div>
 							{this.props.clockTimes.days[d].length === 0 &&
 								<div>
 									{this.state.dayDeletionConfirmation === d &&
@@ -79,7 +79,7 @@ class ClockTimes extends React.Component {
 							<Button size="small" onClick={() => this.props.actions.addClockTimeEntry(d)}>
 								Eintrag hinzufügen <AlarmAdd />
 							</Button>
-						</Typography>
+						</div>
 					</CardContent>
 				</Card>
 			)
